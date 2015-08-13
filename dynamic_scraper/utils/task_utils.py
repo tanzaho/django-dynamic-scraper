@@ -26,14 +26,14 @@ class TaskUtils():
         }
         params = urllib.urlencode(param_dict)
         headers = {"Content-type": "application/x-www-form-urlencoded", "Accept": "text/plain"}
-        conn = httplib.HTTPConnection("localhost:6800")
+        conn = httplib.HTTPConnection("scrapyd:6800")
         conn.request("POST", "/schedule.json", params, headers)
         conn.getresponse()
     
     
     def _pending_jobs(self, spider):
         # Ommit scheduling new jobs if there are still pending jobs for same spider
-        resp = urllib2.urlopen('http://localhost:6800/listjobs.json?project=default')
+        resp = urllib2.urlopen('http://scrapyd:6800/listjobs.json?project=default')
         data = json.load(resp)
         if 'pending' in data:
             for item in data['pending']:
