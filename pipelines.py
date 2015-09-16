@@ -2,7 +2,7 @@ import hashlib
 from dynamic_scraper.models import ScraperElem
 from scrapy import log
 from scrapy.contrib.pipeline.images import ImagesPipeline
-from scrapy.exceptions import DropItem
+from scrapy.exceptions import DropItem, CloseSpider
 from scrapy.http import Request
 
 
@@ -67,6 +67,8 @@ class ValidationPipeline(object):
         
         if spider.conf['MAX_ITEMS_SAVE'] and spider.items_save_count >= spider.conf['MAX_ITEMS_SAVE']:
             spider.log("Max items save reached, item not saved.", log.INFO)
+            spider.close_down = True
+            raise CloseSpider('Max items save reached, item not saved')
             raise DropItem()
         
         if not spider.conf['DO_ACTION']:
